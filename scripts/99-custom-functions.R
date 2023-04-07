@@ -64,40 +64,40 @@ scrape_course <- function(course_url, question_wording = NULL) {
                              var == questions_wording[4] ~ "difficulty"))
   
   ## Getting the comments -------------------------------------------------
-  
-  positive <- client$findElements("class", "blue-hotfix-button")
-  if(length(positive) > 0) {
-    ## show comments for positives
-    client$findElement("class", "blue-hotfix-button")$clickElement()
-    Sys.sleep(0.5)
-
-    ## scrape positive comments
-    positive <- client$findElements("css", ".ev--dark-text p") %>%
-      map(~.x$getElementText())
-
-    ## toggle comments for positive - hide them
-    client$findElement("class", "blue-hotfix-button")$clickElement()
-    Sys.sleep(0.5)
-  } else {positive = list(NULL)}
-
-  negative <- client$findElements("css", ".results-question-item+ .results-question-item .clickable")
-  if(length(negative) > 0) {
-    ## show comments to negative
-    client$findElement("css", ".results-question-item+ .results-question-item .clickable")$clickElement()
-    Sys.sleep(0.5)
-
-    ## scrape negative comments
-    negative <- client$findElements("css", ".ev--dark-text p") %>%
-      map(~.x$getElementText())
-    Sys.sleep(0.5)
-  } else {negative = list(NULL)}
-  
-  ## Check if positive comments are present. If not, then the negative comments 
-  ## have been accidentaly labeled as positive.
-  questions <- client$findElements("css", ".question-text")
-  questions <- sapply(questions, function(x) x$getElementText())
-  positive_present <- any(str_detect(questions, "Co na předmětu a vyučujícím nejvíce oceňujete?"))
-  
+  # 
+  # positive <- client$findElements("class", "blue-hotfix-button")
+  # if(length(positive) > 0) {
+  #   ## show comments for positives
+  #   client$findElement("class", "blue-hotfix-button")$clickElement()
+  #   Sys.sleep(0.5)
+  # 
+  #   ## scrape positive comments
+  #   positive <- client$findElements("css", ".ev--dark-text p") %>%
+  #     map(~.x$getElementText())
+  # 
+  #   ## toggle comments for positive - hide them
+  #   client$findElement("class", "blue-hotfix-button")$clickElement()
+  #   Sys.sleep(0.5)
+  # } else {positive = list(NULL)}
+  # 
+  # negative <- client$findElements("css", ".results-question-item+ .results-question-item .clickable")
+  # if(length(negative) > 0) {
+  #   ## show comments to negative
+  #   client$findElement("css", ".results-question-item+ .results-question-item .clickable")$clickElement()
+  #   Sys.sleep(0.5)
+  # 
+  #   ## scrape negative comments
+  #   negative <- client$findElements("css", ".ev--dark-text p") %>%
+  #     map(~.x$getElementText())
+  #   Sys.sleep(0.5)
+  # } else {negative = list(NULL)}
+  # 
+  # ## Check if positive comments are present. If not, then the negative comments 
+  # ## have been accidentaly labeled as positive.
+  # questions <- client$findElements("css", ".question-text")
+  # questions <- sapply(questions, function(x) x$getElementText())
+  # positive_present <- any(str_detect(questions, "Co na předmětu a vyučujícím nejvíce oceňujete?"))
+  # 
   # Merging Data ----------------------------------------------------------
   
   ## Cleaning lecturer data
@@ -108,14 +108,14 @@ scrape_course <- function(course_url, question_wording = NULL) {
     mutate(lecturer_rating = as.numeric(str_extract(lecturer, "\\d+\\.?\\d*")),
            lecturer = str_trim(str_remove(lecturer, "\\d+\\.?\\d*%")))
   
-  comments <- tibble(course = course_name,
-                     negative =  ifelse(is.null(negative), NA, list(flatten(negative))),
-                     positive =  ifelse(is.null(positive), NA, list(flatten(positive))))
-  
-  if (!positive_present) {
-    comments$negative <- comments$positive
-    comments$positive <- list(NULL)
-    }
+  # comments <- tibble(course = course_name,
+  #                    negative =  ifelse(is.null(negative), NA, list(flatten(negative))),
+  #                    positive =  ifelse(is.null(positive), NA, list(flatten(positive))))
+  # 
+  # if (!positive_present) {
+  #   comments$negative <- comments$positive
+  #   comments$positive <- list(NULL)
+  #   }
   
   ## Cleaning enrollment stats
   enrolled <- tibble(total_responses = str_extract(n_rating[[1]][[1]], "\\d+"),
@@ -131,6 +131,6 @@ scrape_course <- function(course_url, question_wording = NULL) {
              semester = semester,
              url = course_url) %>% 
       left_join(lecturer_stats, by = c("course", "url")) %>% 
-      left_join(comments, by = "course") %>%
+#      left_join(comments, by = "course") %>%
       left_join(enrolled, by = "course")
 }

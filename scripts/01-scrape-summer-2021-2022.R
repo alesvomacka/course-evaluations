@@ -10,7 +10,7 @@ client <- driver$client
 
 # Getting department list -------------------------------------------------
 
-client$navigate("http://hodnoceni.ff.cuni.cz/results/evaluation/summer-term-20212022/department")
+client$navigate("http://evaluace.ff.cuni.cz/results/evaluation/summer-term-20212022/department")
 
 departments <- client$findElements("css", ".ev--click a")
 
