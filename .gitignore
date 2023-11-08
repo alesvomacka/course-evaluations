@@ -6,3 +6,6 @@
 
 data-input/
 data-output/
+
+renv/*
+!renv/activate.R
