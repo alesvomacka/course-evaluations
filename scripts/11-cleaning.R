@@ -47,6 +47,16 @@ courses <- courses |>
                                 "Summer 2021/2022",
                                 "Winter 2022/2023"))
 
+
+# Fixing Value Types ------------------------------------------------------
+courses <- courses |> 
+  mutate(across(.cols = ends_with("_val"),
+                .fns  = as.numeric),
+         across(.cols = ends_with("_resp"),
+                .fns  = as.numeric),
+         enrolled = as.numeric(enrolled))
+
+
 # Data export -------------------------------------------------------------
 
 write_rds(courses, "data-output/course_evals.rds")
